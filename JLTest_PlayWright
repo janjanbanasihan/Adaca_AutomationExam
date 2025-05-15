@@ -1,0 +1,31 @@
+# John Lester Banasihan
+# Automating the SauceDemo webpage using playwright
+
+from playwright.sync_api import sync_playwright
+
+with sync_playwright() as p:
+    browser = p.chromium.launch()
+    page = browser.new_page()
+    page.goto("https://www.saucedemo.com/")
+    
+    # Interact with login fields
+    page.fill("#user-name", "standard_user")
+    page.fill("#password", "secret_sauce")
+    page.click("#login-button")
+
+    
+    # Validate login success
+    assert "inventory" in page.title()
+
+    #Add item and Assert the added item
+    page.click("#add-to-cart-sauce-labs-backpack")
+    page.click("#shopping_cart_link")
+    await expect(page.getByRole('#cart_item')).toBeVisible();
+
+    #Delete item
+    page.click("#remove-sauce-labs-backpack")
+
+    #Assertion for the SauceDemo DashBoard
+    await expect(page.getByRole('#app_logo')).toBeVisible();
+
+    browser.close()
